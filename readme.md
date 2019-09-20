@@ -12,7 +12,7 @@ This program tracks the time invested into certain skills.  You can specify any 
 The level algorithm is very simple. To reach a given level you have to complete n hours, where n is the number of the
  next level squared.
 
-Examples: 
+_Examples:_
 
 1 hour to reach level 1 (1 ** 2 = 1);
 
