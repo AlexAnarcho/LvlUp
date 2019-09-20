@@ -3,7 +3,7 @@ current version: 0.6
 
 ## About
 This program tracks the time invested into certain skills.  You can specify any skill and enter progress made on a
- daily basis. There is a simple Level Algorithm to determine a level and give some gameification to your progress
+ daily basis. There is a simple Level algorithm to determine a level and give some gameification to your progress
 . The game works with the Pomodoro technique and counts 2 Pomodoros (50 Minutes) as one hour. While this is a
  simplification in my experience the work done with the Pomodoro technique is more focused and productive. Therefore
  the heuristic has been made.
@@ -37,12 +37,11 @@ In the background there is a xlsx sheet created with openpyxl that lists the ent
 
 ---
 ## Patch notes
-version 0.6: added support for matplotlib and 2 simple graphing functions:
-
+* version 0.6: added support for matplotlib and 2 simple graphing functions:
     * Hours invested per day
     * Progress over time
 
-version 0.5: added support for multiple skills to levelup
+* version 0.5: added support for multiple skills to levelup
 
 ## Upcoming features
 * When starting for the first time, create a new worksheet with openpyxl and let the user specify the path.
