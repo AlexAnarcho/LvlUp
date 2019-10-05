@@ -1,5 +1,5 @@
 # LvlUp
-current version: 0.6
+current version: 0.6.1
 
 ## About
 This program tracks the time invested into certain skills.  You can specify any skill and enter progress made on a
