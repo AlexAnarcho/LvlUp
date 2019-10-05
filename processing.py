@@ -1,10 +1,10 @@
 """Stores the logic for calculating levels and the processing of information"""
 
 import datetime
-
+import openpyxl
+import os
 from menues import *
-
-workbook_path = '/Users/alex/Documents/LevelUp Progress/lvlupProgress.xlsx'
+from essentials import *
 
 
 def input_pomos():
@@ -28,8 +28,9 @@ def input_pomos():
 
 def load_sheet(sheet_name):
     """Load the specified worksheet"""
+    workbook_path = get_workbook_path()
     wb = openpyxl.load_workbook(workbook_path)
-    sheet_obj = wb.get_sheet_by_name(sheet_name)
+    sheet_obj = wb[sheet_name]
     return sheet_obj, wb
 
 
@@ -61,16 +62,17 @@ def get_progress_sheet(sheet_obj):
     :return:
     """
     sheet = sheet_obj
-    total_hours = sheet['C2'].value
-    total_xp_for_lvlup = sheet['C4'].value
-    current_level = sheet['D2'].value
-    next_level = sheet['D4'].value
-    xp_accumulated = sheet['E2'].value
-    xp_delta = sheet['E4'].value
-    flag_levelup = sheet['D6'].value
+    total_hours = sheet['A2'].value
+    total_xp_for_lvlup = sheet['A4'].value
+    current_level = sheet['B2'].value
+    next_level = sheet['B4'].value
+    xp_accumulated = sheet['C2'].value
+    xp_delta = sheet['C4'].value
+    flag_levelup = sheet['B6'].value
     daily_hours = sheet.cell(row=sheet.max_row, column=2).value
-    return total_hours, total_xp_for_lvlup, current_level, next_level, xp_accumulated, \
-        xp_delta, daily_hours, flag_levelup
+
+    return total_hours, total_xp_for_lvlup, current_level, next_level, xp_accumulated, xp_delta, daily_hours, \
+           flag_levelup
 
 
 def write_daily_hours(daily_hours, sheet_obj, wb_obj):
@@ -83,21 +85,23 @@ def write_daily_hours(daily_hours, sheet_obj, wb_obj):
     :return:
     """
     # Load the workbook for the progress tracking
-    sheet = sheet_obj
-    wb = wb_obj
-    # getting the date for today
-    datetime_obj = datetime.datetime.now()
-    today_formatted = datetime_obj.strftime('%d.%m.%Y')
-    # Fill in the progress made, if date already exists, hours are added, else new line with date + hours created
-    new_daily_hours_cell = sheet.cell(row=sheet.max_row, column=2)
-    if sheet.cell(row=sheet.max_row, column=1).value == today_formatted:
-        hours = new_daily_hours_cell.value
-        new_daily_hours_cell.value = daily_hours + float(hours)
-    else:
-        sheet.cell(row=(sheet.max_row + 1), column=1).value = today_formatted
+    if daily_hours > 0:
+        workbook_path = get_workbook_path()
+        sheet = sheet_obj
+        wb = wb_obj
+        # getting the date for today
+        datetime_obj = datetime.datetime.now()
+        today_formatted = datetime_obj.strftime('%d.%m.%Y')
+        # Fill in the progress made, if date already exists, hours are added, else new line with date + hours created
         new_daily_hours_cell = sheet.cell(row=sheet.max_row, column=2)
-        new_daily_hours_cell.value = daily_hours
-    wb.save(workbook_path)
+        if sheet.cell(row=sheet.max_row, column=1).value == today_formatted:
+            hours = new_daily_hours_cell.value
+            new_daily_hours_cell.value = daily_hours + float(hours)
+        else:
+            sheet.cell(row=(sheet.max_row + 1), column=1).value = today_formatted
+            new_daily_hours_cell = sheet.cell(row=sheet.max_row, column=2)
+            new_daily_hours_cell.value = daily_hours
+        wb.save(workbook_path)
 
 
 def write_progress_sheet(total_hours, current_level, next_level, xp_accumulated, total_xp_for_lvlup,
@@ -114,17 +118,21 @@ def write_progress_sheet(total_hours, current_level, next_level, xp_accumulated,
     :param wb_obj:                  Required: Workbook object needed to save progress
     :return:
     """
+
     # Load the workbook for the progress tracking
+    workbook_path = get_workbook_path()
     wb = wb_obj
     sheet = sheet_obj
+
     # Getting the appropriate cells in variables
-    cell_total_hours = sheet['C2']
-    cell_total_xp_for_lvlup = sheet['C4']
-    cell_current_level = sheet['D2']
-    cell_next_level = sheet['D4']
-    cell_xp_accumulated = sheet['E2']
-    cell_xp_delta = sheet['E4']
-    cell_flag_levelup = sheet['D6']
+    cell_total_hours = sheet['A2']
+    cell_total_xp_for_lvlup = sheet['A4']
+    cell_current_level = sheet['B2']
+    cell_next_level = sheet['B4']
+    cell_xp_accumulated = sheet['C2']
+    cell_xp_delta = sheet['C4']
+    cell_flag_levelup = sheet['B6']
+
     # Update the other fields
     cell_total_hours.value = total_hours
     cell_current_level.value = current_level
@@ -156,8 +164,12 @@ def main_processing():
 
     # Processing the progress made
     # Adding the daily_hours
-    total_hours += daily_hours  # add daily hours to total hours
-    xp_accumulated += daily_hours  # add the daily hours to the eXP
+    if total_hours is None:
+        total_hours = daily_hours
+        xp_accumulated = daily_hours
+    else:
+        total_hours += daily_hours  # add daily hours to total hours
+        xp_accumulated += daily_hours  # add the daily hours to the eXP
     next_level = current_level + 1
 
     # Checking for LvlUp

@@ -2,21 +2,21 @@
 
 import matplotlib.pyplot as plt
 import openpyxl
-from processing import *
+import datetime
 from matplotlib import dates as mpl_dates
+from essentials import *
 
 plt.style.use('seaborn-deep')
-workbook_path = '/Users/alex/Documents/LevelUp Progress/lvlupProgress.xlsx'
-
 
 def read_hours_from_worksheet(sheet_name):
     """Read in the information of the worksheet, return x (time) and y (experience)"""
+    workbook_path = get_workbook_path()
     wb = openpyxl.load_workbook(workbook_path)
     ws = wb[sheet_name]
 
     # return a list of the datetime entries
     last_row = str(ws.max_row)
-    dates_row = tuple(ws['A2':'A' + last_row])
+    dates_row = tuple(ws['A9':'A' + last_row])
     date_strings = []
     for row_of_cell_objs in dates_row:
         for date in row_of_cell_objs:
@@ -24,7 +24,7 @@ def read_hours_from_worksheet(sheet_name):
 
     # return a list of the hours
     last_row = str(ws.max_row)
-    hours_row = tuple(ws['B2':'B' + last_row])
+    hours_row = tuple(ws['B9':'B' + last_row])
     hours_list = []
     for row_of_cell_objs in hours_row:
         for hours in row_of_cell_objs:
@@ -34,10 +34,11 @@ def read_hours_from_worksheet(sheet_name):
 
 def read_total_hours_from_worksheet(sheet_name):
     """Reads the total hours from the worksheet"""
+    workbook_path = get_workbook_path()
     wb = openpyxl.load_workbook(workbook_path)
     ws = wb[sheet_name]
 
-    total_hours = ws['C2'].value
+    total_hours = ws['A2'].value
 
     return total_hours
 

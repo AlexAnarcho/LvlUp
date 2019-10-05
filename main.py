@@ -1,9 +1,11 @@
-#! /usr/bin/env python3
+#! /usr/local/bin python3
 # Describe your level in python
 
+from menues import *
 from processing import *
-
-workbook_path = '/Users/alex/Documents/LevelUp Progress/lvlupProgress.xlsx'
+from graphs import *
+import os
+from essentials import create_config_file
 
 
 def main_output(sheet_obj, sheet_name):
@@ -25,6 +27,7 @@ def main_output(sheet_obj, sheet_name):
     str_1_next_level = f'{str(xp_delta)} more hours required to level up to {str(next_level)}.'
     str_2_next_level = f"until Level {str(next_level)}"
     str_congrats = f'Congratulations! You have reached Level {str(current_level)}!'
+
     # Centering the strings
     str_displ_daily_hours = f'{str(daily_hours).rjust(display_length - len(str_hours_daily), ".")}'
     str_displ_total_hours = f'{str(total_hours).rjust(display_length - len(str_hours_total), ".")}'
@@ -43,14 +46,14 @@ def main_output(sheet_obj, sheet_name):
     else:
         print(f'\n{str_displ_current_level}')
         print(f'\n{str_displ_next_level}')
-        print_progressbar(xp_accumulated, total_xp_for_lvlup, suffix=str_2_next_level,
+        print_progressbar(iteration=xp_accumulated, total=total_xp_for_lvlup, suffix=str_2_next_level,
                           length=(display_length - (len(str_2_next_level) + 10)), fill='█')
 
     # prompt user if they want to see the graph of the progress
-    show_progress_graph(sheet_name=sheet_name)
-
     print(f'\n\n{str_displ_ending}\n')  # printing the ending
     print(f'\n{"-" * display_length}')
+    print()
+    show_progress_graph(sheet_name=sheet_name)
 
 
 def main_program():
@@ -59,8 +62,10 @@ def main_program():
     Main Program.
     :return:
     """
+    workbook_path = get_workbook_path()
     sheet_obj, sheet_name = main_processing()
     main_output(sheet_obj, sheet_name)
 
 
-main_program()
+if __name__ == '__main__':
+    main_program()

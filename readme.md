@@ -37,6 +37,9 @@ In the background there is a xlsx sheet created with openpyxl that lists the ent
 
 ---
 ## Patch notes
+* version 0.6.1: fixed some bugs
+    * Eliminate the hardcoded filepaths and replace with a config text file
+
 * version 0.6: added support for matplotlib and 2 simple graphing functions:
     * Hours invested per day
     * Progress over time
@@ -46,9 +49,21 @@ In the background there is a xlsx sheet created with openpyxl that lists the ent
 ## Upcoming features
 * When starting for the first time, create a new worksheet with openpyxl and let the user specify the path.
     * Give a default path for the user as well.
-    * Let the user specify hours already invested in a certain skill
+    * Format the newly created xlsx sheet nicely
+    * Let the user specify hours already invested in a certain skill, fill in other fields accordingly
 * Don't write a new daytime object if the entered amount is 0
 * Implement further graphs to visualize characteristics
+
+## Bug fixes
+*/usr/local/lib/python3.7/site-packages/pandas/plotting/_matplotlib/converter.py:103: FutureWarning: Using an
+  implicitly registered datetime converter for a matplotlib plotting method. The converter was registered by pandas
+    on import. Future versions of pandas will require you to explicitly register matplotlib converters.
+
+To register the converters:
+	>>> from pandas.plotting import register_matplotlib_converters
+	>>> register_matplotlib_converters()
+  warnings.warn(msg, FutureWarning)
+
 
 ---
 ## Copyrights and contact info
