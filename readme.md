@@ -1,5 +1,5 @@
 # LvlUp
-current version: 0.6.1
+current version: 0.6.2
 
 ## About
 This program tracks the time invested into certain skills.  You can specify any skill and enter progress made on a
@@ -37,8 +37,13 @@ In the background there is a xlsx sheet created with openpyxl that lists the ent
 
 ---
 ## Patch notes
+* v 0.6.2:
+    * Cleaning up the modules (main, processing, print_output)
+    * Let the user specify hours already invested in a certain skill, fill in other fields accordingly
+
 * version 0.6.1: fixed some bugs
     * Eliminate the hardcoded filepaths and replace with a config text file
+    * Don't write a new daytime object if the entered amount is 0
 
 * version 0.6: added support for matplotlib and 2 simple graphing functions:
     * Hours invested per day
@@ -48,10 +53,7 @@ In the background there is a xlsx sheet created with openpyxl that lists the ent
 
 ## Upcoming features
 * When starting for the first time, create a new worksheet with openpyxl and let the user specify the path.
-    * Give a default path for the user as well.
     * Format the newly created xlsx sheet nicely
-    * Let the user specify hours already invested in a certain skill, fill in other fields accordingly
-* Don't write a new daytime object if the entered amount is 0
 * Implement further graphs to visualize characteristics
 
 ## Bug fixes

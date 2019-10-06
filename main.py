@@ -1,11 +1,9 @@
-#! /usr/local/bin python3
+#! /usr/local/bin/python3
 # Describe your level in python
 
-from menues import *
+from print_output import *
 from processing import *
-from graphs import *
 import os
-from essentials import create_config_file
 
 
 def main_output(sheet_obj, sheet_name):

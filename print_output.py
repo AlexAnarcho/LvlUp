@@ -1,53 +1,13 @@
 """Stores all the functions needed for displaying the menu and the progress"""
 
+import os
 import inquirer
-import openpyxl
-from graphs import *
-from essentials import *
+from processing import *
+import matplotlib.pyplot as plt
 
+from matplotlib import dates as mpl_dates
 
-def load_menu_options():
-    """
-    Loading the sheet names for the menu in the selector
-    :return:
-    """
-    workbook_path = get_workbook_path()
-    wb = openpyxl.load_workbook(workbook_path)
-    sheet_names = wb.sheetnames
-    return sheet_names
-
-
-def skill_menu():
-    """
-    Make a selection from the skill menu. The skill selected will be loaded from the spreadsheet.
-    :return:
-    """
-    while True:
-        menu_options = load_menu_options()
-        menu_complete = menu_options[:]
-        menu_complete.append('Add new skill')
-        questions = [
-            inquirer.List('skill',
-                          message="What skill are you improving?",
-                          choices=menu_complete,
-                          carousel=True
-                          ),
-        ]
-        selections = inquirer.prompt(questions)
-        if selections['skill'] == menu_complete[-1]:
-            entering_active = True
-            while entering_active:
-                skill_name = input("\nGive this new skill a name: ").title()
-                if len(skill_name) > 3:
-                    initiate_new_sheet(skill_name)
-                    entering_active = False
-                else:
-                    print('ERROR: The skill name must be longer than three characters.')
-        elif selections['skill'] in menu_options:
-            # Get the sheet object of Python
-            sheet_name = selections['skill']
-            break
-    return sheet_name
+plt.style.use('seaborn-deep')
 
 
 def print_progressbar(iteration, total, prefix='', suffix='', decimals=1, length=100, fill='█'):
@@ -89,3 +49,63 @@ def show_progress_graph(sheet_name):
         plot_hours_per_day(sheet_name)
     elif choice == "Don't show any graph":
         pass
+
+
+def plot_hours_per_day(sheet_name):
+    """Plots the hours invested per day"""
+    date_strings, hours = read_hours_from_worksheet(sheet_name=sheet_name)
+    date_objs = convert_datetime_objs(date_strings)
+
+    plt.plot_date(date_objs, hours, linestyle='solid')
+
+    plt.gcf().autofmt_xdate()
+
+    date_format = mpl_dates.DateFormatter('%d.%m')
+    plt.gca().xaxis.set_major_formatter(date_format)
+
+    plt.ylabel('Hours invested')
+    plt.title('Invested hours per day')
+
+    plt.grid(True)
+    plt.tight_layout()
+
+    plt.show()
+
+
+def plot_progress_over_all_time(sheet_name):
+    """Plots the entire progress over the time of the game."""
+    total_hours = read_total_hours_from_worksheet(sheet_name)
+    date_strings, hours = read_hours_from_worksheet(sheet_name)
+
+    starting_hours = 0
+    # for the case that the user has hours before the logging with the program
+    for hour in hours:
+        if hour is None:
+            continue
+        else:
+            starting_hours += hour
+    starting_hours = total_hours - starting_hours
+
+    hours_progressing = []
+    for hour in hours:
+        if hour is None:
+            continue
+        else:
+            starting_hours += hour
+            hours_progressing.append(starting_hours)
+
+    date_objs = convert_datetime_objs(date_strings)
+
+    plt.plot_date(date_objs, hours_progressing, linestyle='solid')
+
+    plt.gcf().autofmt_xdate()
+
+    date_format = mpl_dates.DateFormatter('%d.%m')
+    plt.gca().xaxis.set_major_formatter(date_format)
+
+    plt.ylabel('Total hours invested')
+    plt.title(f'Progress in {sheet_name}')
+    plt.grid(True)
+    plt.tight_layout()
+
+    plt.show()
